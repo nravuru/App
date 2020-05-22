@@ -17,7 +17,7 @@ import com.tdd.demo.entity.ToDo;
 @Service
 public class ToDoService {
 
-	public List<ToDo> findAll() {
+	public List<ToDo> getAllToDos() {
 		return new ArrayList<>();
 	}
 

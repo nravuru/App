@@ -5,19 +5,31 @@ package com.tdd.demo.entity;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * @author naresh.ravurumckesson.com
  *
  */
+@Entity
+@Table(name="ToDos")
 public class ToDo {
 
-	private int id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long id;
+	private String userName;
 	private String description;
 	private Date createDate;
 	private Date dueDate;
 
-	public ToDo(int id, String description, Date createDate, Date dueDate) {
+	public ToDo(Long id, String userName, String description, Date createDate, Date dueDate) {
 		this.id = id;
+		this.userName = userName;
 		this.description = description;
 		this.createDate = createDate;
 		this.dueDate = dueDate;
@@ -26,15 +38,29 @@ public class ToDo {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**

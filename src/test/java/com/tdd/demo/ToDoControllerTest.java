@@ -42,9 +42,9 @@ public class ToDoControllerTest {
 	@Test
 	void testToDos() throws Exception {
 		List<ToDo> todoList = new ArrayList<>();
-		todoList.add(new ToDo(1, "Fill Timesheet", new Date(), new Date()));
-		todoList.add(new ToDo(2, "Complete homework", new Date(), new Date()));
-		when(toDoSvc.findAll()).thenReturn(todoList);
+		todoList.add(new ToDo(100L, "nravuru", "Fill Timesheet", new Date(), new Date()));
+		todoList.add(new ToDo(200L, "kravuru", "Complete homework", new Date(), new Date()));
+		when(toDoSvc.getAllToDos()).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
