@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="ToDos")
 public class ToDo {
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
@@ -27,6 +27,10 @@ public class ToDo {
 	private Date createDate;
 	private Date dueDate;
 
+	public ToDo() {
+		
+	}
+	
 	public ToDo(Long id, String userName, String description, Date createDate, Date dueDate) {
 		this.id = id;
 		this.userName = userName;
