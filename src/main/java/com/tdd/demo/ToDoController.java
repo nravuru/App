@@ -27,7 +27,12 @@ public class ToDoController {
 	private ToDoService toDoService;
 	
 	@GetMapping("/todos")
-	public ResponseEntity<List<ToDo>> getAllToDos() {
-		return new ResponseEntity<>(toDoService.getAllToDos(), HttpStatus.OK);
+	public List<ToDo> getAllToDos() {
+		return toDoService.getAllToDos();
+	}
+	
+	@GetMapping("/todos/{username}")
+	public List<ToDo> getAllToDosByUsername() {
+		return toDoService.getAllToDosByUserName();
 	}
 }

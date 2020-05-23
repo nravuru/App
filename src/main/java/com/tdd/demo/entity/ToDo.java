@@ -10,6 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 /**
  * @author naresh.ravurumckesson.com
@@ -24,7 +27,9 @@ public class ToDo {
 	private Long id;
 	private String userName;
 	private String description;
+	@Temporal(TemporalType.DATE)
 	private Date createDate;
+	@Temporal(TemporalType.DATE)
 	private Date dueDate;
 
 	public ToDo() {

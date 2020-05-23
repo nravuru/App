@@ -3,8 +3,10 @@
  */
 package com.tdd.demo.repo;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.tdd.demo.entity.ToDo;
 
@@ -15,4 +17,5 @@ import com.tdd.demo.entity.ToDo;
 @Repository
 public interface ToDoRepository extends CrudRepository<ToDo, Long> {
 
+	public List<ToDo> findAllToDosByUserName(String userName);
 }

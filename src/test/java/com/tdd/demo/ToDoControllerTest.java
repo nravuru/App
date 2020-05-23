@@ -49,6 +49,17 @@ public class ToDoControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
 	}
+	
+	@Test
+	void testToDosByUserName() throws Exception {
+		List<ToDo> todoList = new ArrayList<>();
+		todoList.add(new ToDo(100L, "kravuru", "Fill Timesheet", new Date(), new Date()));
+		todoList.add(new ToDo(200L, "kravuru", "Complete homework", new Date(), new Date()));
+		when(toDoSvc.getAllToDosByUserName()).thenReturn(todoList);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+	}
 }
 
 
