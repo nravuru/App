@@ -3,7 +3,6 @@
  */
 package com.tdd.demo.svc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,8 @@ public class ToDoService {
 		
 	}
 	
-	public List<ToDo> getAllToDosByUserName() {
-		return new ArrayList<>();
+	public List<ToDo> getAllToDosByUserName(String userName) {
+		return toDoRepo.findAllToDosByUserName(userName);
 	}
 
 }

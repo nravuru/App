@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyString;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.tdd.demo.entity.ToDo;
@@ -55,7 +56,8 @@ public class ToDoControllerTest {
 		List<ToDo> todoList = new ArrayList<>();
 		todoList.add(new ToDo(100L, "kravuru", "Fill Timesheet", new Date(), new Date()));
 		todoList.add(new ToDo(200L, "kravuru", "Complete homework", new Date(), new Date()));
-		when(toDoSvc.getAllToDosByUserName()).thenReturn(todoList);
+		
+		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());

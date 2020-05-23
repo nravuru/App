@@ -52,7 +52,7 @@ public class ToDoServiceTest {
 		toDoRepo.saveAll(list);
 		
 		ToDoService toDoSvc = new ToDoService(toDoRepo);
-		List<ToDo> toDos = toDoSvc.getAllToDosByUserName();
+		List<ToDo> toDos = toDoSvc.getAllToDosByUserName("kravuru");
 		
 		assertEquals(toDos.size(), 2);			
 	}
