@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +22,7 @@ import com.tdd.demo.repo.ToDoRepository;
  * @author naresh.ravurumckesson.com
  *
  */
+@Transactional
 @SpringBootTest
 public class ToDoServiceTest {
 
@@ -27,9 +30,7 @@ public class ToDoServiceTest {
 	private ToDoRepository toDoRepo;
 	
 	@Test
-	void getAllToDos() {		
-		toDoRepo.deleteAll();
-		
+	void getAllToDos() {
 		ToDo toDo1 = new ToDo(100L, "nravuru", "Finish homework!", new Date(), new Date());
 		toDoRepo.save(toDo1);
 		
@@ -41,8 +42,6 @@ public class ToDoServiceTest {
 	
 	@Test
 	void getAllToDosByUserName() {		
-		toDoRepo.deleteAll();
-		
 		List<ToDo> list = new ArrayList<>();
 		ToDo toDo1 = new ToDo(100L, "kravuru", "Finish homework!", new Date(), new Date());
 		ToDo toDo2 = new ToDo(100L, "kravuru", "Paint pictures!", new Date(), new Date());
