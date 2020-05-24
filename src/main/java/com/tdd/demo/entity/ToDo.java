@@ -27,6 +27,7 @@ public class ToDo {
 	private Long id;
 	private String userName;
 	private String description;
+	private Boolean completed;
 	@Temporal(TemporalType.DATE)
 	private Date createDate;
 	@Temporal(TemporalType.DATE)
@@ -36,10 +37,11 @@ public class ToDo {
 		
 	}
 	
-	public ToDo(String userName, String description, Date createDate, Date dueDate) {
+	public ToDo(String userName, String description, Boolean completed, Date createDate, Date dueDate) {
 		//this.id = id;
 		this.userName = userName;
 		this.description = description;
+		this.completed = completed;
 		this.createDate = createDate;
 		this.dueDate = dueDate;
 	}
@@ -84,6 +86,20 @@ public class ToDo {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the completed
+	 */
+	public Boolean isCompleted() {
+		return completed;
+	}
+
+	/**
+	 * @param completed the completed to set
+	 */
+	public void setCompleted(Boolean completed) {
+		this.completed = completed;
 	}
 
 	/**
