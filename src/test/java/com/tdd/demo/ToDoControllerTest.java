@@ -6,6 +6,7 @@ package com.tdd.demo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -91,6 +92,19 @@ public class ToDoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.description").value("Go for a walk!!")).andDo(print());
+	}
+	
+	@Test
+	void testDeleteToDo() throws Exception {
+		ToDo todo = new ToDo("kravuru", "Finish homework", new Date(), new Date());
+		todo.setId(100L);
+		
+		when(toDoSvc.deleteToDoById(anyLong())).thenReturn(todo.getId());
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/todos/delete/{id}", 100L)
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$").value("Record deleted")).andDo(print());
 	}
 }
 

@@ -3,8 +3,8 @@
  */
 package com.tdd.demo.svc;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,5 +79,19 @@ public class ToDoServiceTest {
 		ToDo toDoResp2 = toDoSvc.updateToDo(todoResp1);
 		
 		assertEquals(toDoResp2.getDescription(), "Go for a walk!!");			
+	}
+	
+	@Test
+	void deleteToDoTest() {		
+		ToDo todo = new ToDo("kravuru", "Finish homework!", new Date(), new Date());
+		
+		ToDoService toDoSvc = new ToDoService(toDoRepo);
+		toDoSvc.addToDo(todo);
+		
+		ToDo todoResp1 = toDoSvc.getToDoById(todo.getId());		
+		
+		toDoSvc.deleteToDoById(todoResp1.getId());
+				
+		assertNull(toDoSvc.getToDoById(todo.getId()));			
 	}
 }

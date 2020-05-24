@@ -30,6 +30,10 @@ public class ToDoService {
 		
 	}
 	
+	public ToDo getToDoById(Long id) {
+		return toDoRepo.findToDoById(id);
+	}
+	
 	public List<ToDo> getAllToDosByUserName(String userName) {
 		return toDoRepo.findAllToDosByUserName(userName);
 	}
@@ -40,7 +44,9 @@ public class ToDoService {
 
 	public ToDo updateToDo(ToDo todo) {
 		return toDoRepo.save(todo);
-		
 	}
 
+	public Long deleteToDoById(Long id) {
+		return toDoRepo.deleteToDoById(id);
+	}
 }

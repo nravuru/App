@@ -17,5 +17,7 @@ import com.tdd.demo.entity.ToDo;
 @Repository
 public interface ToDoRepository extends CrudRepository<ToDo, Long> {
 
+	public ToDo findToDoById(Long id);
 	public List<ToDo> findAllToDosByUserName(String userName);
+	public Long deleteToDoById(Long id);
 }
