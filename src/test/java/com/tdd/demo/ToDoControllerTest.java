@@ -48,31 +48,29 @@ public class ToDoControllerTest {
 	@Test
 	void testToDos() throws Exception {
 		List<ToDo> todoList = new ArrayList<>();
-		todoList.add(new ToDo(100L, "nravuru", "Fill Timesheet", new Date(), new Date()));
-		todoList.add(new ToDo(200L, "kravuru", "Complete homework", new Date(), new Date()));
+		todoList.add(new ToDo("nravuru", "Fill Timesheet", new Date(), new Date()));
+		todoList.add(new ToDo("kravuru", "Complete homework", new Date(), new Date()));
 		when(toDoSvc.getAllToDos()).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
-		System.out.println(">>>> " + jsonPath("$"));
 	}
 	
 	@Test
 	void testToDosByUserName() throws Exception {
 		List<ToDo> todoList = new ArrayList<>();
-		todoList.add(new ToDo(100L, "kravuru", "Fill Timesheet", new Date(), new Date()));
-		todoList.add(new ToDo(200L, "kravuru", "Complete homework", new Date(), new Date()));
+		todoList.add(new ToDo("kravuru", "Fill Timesheet", new Date(), new Date()));
+		todoList.add(new ToDo("kravuru", "Complete homework", new Date(), new Date()));
 		
 		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
-		System.out.println("????? " + jsonPath("$"));
 	}
 	
 	@Test
 	void testAddToDo() throws Exception {
-		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", new Date(), new Date());
+		ToDo todo = new ToDo("kravuru", "Finish homework", new Date(), new Date());
 		
 		when(toDoSvc.addToDo(any())).thenReturn(todo);
 		
@@ -80,7 +78,19 @@ public class ToDoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.userName").value("kravuru")).andDo(print());		
-		System.out.println("!!!!!! " + jsonPath("$"));
+	}
+	
+	@Test
+	void testUpdateToDo() throws Exception {
+		ToDo todo = new ToDo("kravuru", "Finish homework", new Date(), new Date());
+		todo.setDescription("Go for a walk!!");
+				
+		when(toDoSvc.updateToDo(any())).thenReturn(todo);
+		
+		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update")
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.description").value("Go for a walk!!")).andDo(print());
 	}
 }
 

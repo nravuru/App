@@ -31,7 +31,7 @@ public class ToDoServiceTest {
 	
 	@Test
 	void getAllToDos() {
-		ToDo toDo1 = new ToDo(100L, "nravuru", "Finish homework!", new Date(), new Date());
+		ToDo toDo1 = new ToDo("nravuru", "Finish homework!", new Date(), new Date());
 		toDoRepo.save(toDo1);
 		
 		ToDoService toDoSvc = new ToDoService(toDoRepo);
@@ -43,8 +43,8 @@ public class ToDoServiceTest {
 	@Test
 	void getAllToDosByUserName() {		
 		List<ToDo> list = new ArrayList<>();
-		ToDo toDo1 = new ToDo(100L, "kravuru", "Finish homework!", new Date(), new Date());
-		ToDo toDo2 = new ToDo(100L, "kravuru", "Paint pictures!", new Date(), new Date());
+		ToDo toDo1 = new ToDo("kravuru", "Finish homework!", new Date(), new Date());
+		ToDo toDo2 = new ToDo("kravuru", "Paint pictures!", new Date(), new Date());
 		list.add(toDo1);
 		list.add(toDo2);
 		
@@ -54,5 +54,30 @@ public class ToDoServiceTest {
 		List<ToDo> toDos = toDoSvc.getAllToDosByUserName("kravuru");
 		
 		assertEquals(toDos.size(), 2);			
+	}
+	
+	@Test
+	void addToDoTest() {		
+		ToDo todo = new ToDo("kravuru", "Finish homework!", new Date(), new Date());
+		
+		ToDoService toDoSvc = new ToDoService(toDoRepo);
+		ToDo toDoResp = toDoSvc.addToDo(todo);
+		
+		assertEquals(toDoResp.getUserName(), "kravuru");			
+	}
+	
+	@Test
+	void updateToDoTest() {		
+		ToDo todo = new ToDo("kravuru", "Finish homework!", new Date(), new Date());
+		
+		ToDoService toDoSvc = new ToDoService(toDoRepo);
+		toDoSvc.addToDo(todo);
+		
+		ToDo todoResp1 = toDoSvc.getAllToDosByUserName("kravuru").get(0);
+		todoResp1.setDescription("Go for a walk!!");
+		
+		ToDo toDoResp2 = toDoSvc.updateToDo(todoResp1);
+		
+		assertEquals(toDoResp2.getDescription(), "Go for a walk!!");			
 	}
 }

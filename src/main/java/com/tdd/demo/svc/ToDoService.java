@@ -38,4 +38,9 @@ public class ToDoService {
 		return toDoRepo.save(todo);
 	}
 
+	public ToDo updateToDo(ToDo todo) {
+		return toDoRepo.save(todo);
+		
+	}
+
 }

@@ -36,8 +36,8 @@ public class ToDo {
 		
 	}
 	
-	public ToDo(Long id, String userName, String description, Date createDate, Date dueDate) {
-		this.id = id;
+	public ToDo(String userName, String description, Date createDate, Date dueDate) {
+		//this.id = id;
 		this.userName = userName;
 		this.description = description;
 		this.createDate = createDate;
