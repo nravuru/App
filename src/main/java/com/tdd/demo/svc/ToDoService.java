@@ -34,4 +34,8 @@ public class ToDoService {
 		return toDoRepo.findAllToDosByUserName(userName);
 	}
 
+	public ToDo addToDo(ToDo todo) {
+		return toDoRepo.save(todo);
+	}
+
 }

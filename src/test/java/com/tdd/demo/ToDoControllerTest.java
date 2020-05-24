@@ -4,6 +4,9 @@
 package com.tdd.demo;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -19,10 +22,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.anyString;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tdd.demo.entity.ToDo;
 import com.tdd.demo.svc.ToDoService;
 
@@ -37,6 +39,9 @@ public class ToDoControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	@MockBean
 	private ToDoService toDoSvc;
 	
@@ -49,6 +54,7 @@ public class ToDoControllerTest {
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+		System.out.println(">>>> " + jsonPath("$"));
 	}
 	
 	@Test
@@ -61,6 +67,20 @@ public class ToDoControllerTest {
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+		System.out.println("????? " + jsonPath("$"));
+	}
+	
+	@Test
+	void testAddToDo() throws Exception {
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", new Date(), new Date());
+		
+		when(toDoSvc.addToDo(any())).thenReturn(todo);
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/todos/add")
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.userName").value("kravuru")).andDo(print());		
+		System.out.println("!!!!!! " + jsonPath("$"));
 	}
 }
 

@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +34,10 @@ public class ToDoController {
 	@GetMapping("/todos/{username}")
 	public List<ToDo> getAllToDosByUsername(@PathVariable("username") String username) {
 		return toDoService.getAllToDosByUserName(username);
+	}
+	
+	@PostMapping("/todos/add")
+	public ToDo addToDo(ToDo todo) {
+		return toDoService.addToDo(todo);
 	}
 }
