@@ -54,7 +54,7 @@ public class ToDoControllerTest {
 		when(toDoSvc.getAllToDos()).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos").contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+			.andExpect(jsonPath("$", hasSize(2)));
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ public class ToDoControllerTest {
 		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+			.andExpect(jsonPath("$", hasSize(2)));
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class ToDoControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/todos/add")
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.userName").value("kravuru")).andDo(print());		
+				.andExpect(jsonPath("$.userName").value("kravuru"));		
 	}
 	
 	@Test
@@ -91,7 +91,7 @@ public class ToDoControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update")
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.description").value("Go for a walk!!")).andDo(print());
+				.andExpect(jsonPath("$.description").value("Go for a walk!!"));
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class ToDoControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update")
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.completed").value(true)).andDo(print());
+				.andExpect(jsonPath("$.completed").value(true));
 	}
 	
 	@Test
@@ -117,7 +117,23 @@ public class ToDoControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.delete("/todos/delete/{id}", 100L)
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$").value("Record deleted")).andDo(print());
+				.andExpect(jsonPath("$").value("Record deleted"));
+	}
+	
+	@Test
+	void testCompletedToDos() throws Exception {
+		ToDo todo1 = new ToDo("kravuru", "Finish homework", true, new Date(), new Date());
+		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk", true, new Date(), new Date());
+		List<ToDo> completedTasks = new ArrayList<>();
+		
+		completedTasks.add(todo1);
+		completedTasks.add(todo2);
+		
+		when(toDoSvc.getAllCompletedTasks(anyString())).thenReturn(completedTasks);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "true")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(2))).andDo(print());
 	}
 }
 

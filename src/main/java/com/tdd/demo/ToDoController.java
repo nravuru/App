@@ -57,4 +57,18 @@ public class ToDoController {
 			return "";
 		}
 	}
+	
+	@GetMapping("/todos/{userName}/{completeBln}")
+	public List<ToDo> getAllCompletedTasks(@PathVariable("userName") String userName,
+			@PathVariable("completeBln") String completeBln) {
+		List<ToDo> tasks = null;
+		
+		if (Boolean.parseBoolean(completeBln)) {
+			tasks = toDoService.getAllCompletedTasks(userName);
+		} else {
+			tasks = null;
+		}
+		
+		return tasks; 
+	}
 }
