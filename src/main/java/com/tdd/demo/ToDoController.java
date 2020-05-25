@@ -66,7 +66,7 @@ public class ToDoController {
 		if (Boolean.parseBoolean(completeBln)) {
 			tasks = toDoService.getAllCompletedTasks(userName);
 		} else {
-			tasks = null;
+			tasks = toDoService.getAllOutstandingTasks(userName);
 		}
 		
 		return tasks; 

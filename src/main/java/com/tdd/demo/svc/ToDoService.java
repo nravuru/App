@@ -51,6 +51,10 @@ public class ToDoService {
 	}
 
 	public List<ToDo> getAllCompletedTasks(String userName) {
-		return toDoRepo.getCompletedTasks(userName);
+		return toDoRepo.getTasksByStatus(userName, true);
+	}
+
+	public List<ToDo> getAllOutstandingTasks(String userName) {
+		return toDoRepo.getTasksByStatus(userName, false);
 	}
 }

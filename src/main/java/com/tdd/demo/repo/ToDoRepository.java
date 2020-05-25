@@ -21,6 +21,6 @@ public interface ToDoRepository extends CrudRepository<ToDo, Long> {
 	public ToDo findToDoById(Long id);
 	public List<ToDo> findAllToDosByUserName(String userName);
 	public Long deleteToDoById(Long id);
-	@Query("SELECT t FROM ToDo t WHERE t.userName = ?1 and t.completed = true")
-	public List<ToDo> getCompletedTasks(String userName);
+	@Query("SELECT t FROM ToDo t WHERE t.userName = ?1 and t.completed = ?2")
+	public List<ToDo> getTasksByStatus(String userName, Boolean completeBln);
 }

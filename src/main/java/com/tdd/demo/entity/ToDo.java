@@ -27,6 +27,7 @@ public class ToDo {
 	private Long id;
 	private String userName;
 	private String description;
+	private String additionalDetails;
 	private Boolean completed;
 	@Temporal(TemporalType.DATE)
 	private Date createDate;
@@ -38,9 +39,17 @@ public class ToDo {
 	}
 	
 	public ToDo(String userName, String description, Boolean completed, Date createDate, Date dueDate) {
-		//this.id = id;
 		this.userName = userName;
 		this.description = description;
+		this.completed = completed;
+		this.createDate = createDate;
+		this.dueDate = dueDate;
+	}
+	
+	public ToDo(String userName, String description, String additionalDetails, Boolean completed, Date createDate, Date dueDate) {
+		this.userName = userName;
+		this.description = description;
+		this.additionalDetails = additionalDetails;
 		this.completed = completed;
 		this.createDate = createDate;
 		this.dueDate = dueDate;
@@ -86,6 +95,20 @@ public class ToDo {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the additionalDetails
+	 */
+	public String getAdditionalDetails() {
+		return additionalDetails;
+	}
+
+	/**
+	 * @param additionalDetails the additionalDetails to set
+	 */
+	public void setAdditionalDetails(String additionalDetails) {
+		this.additionalDetails = additionalDetails;
 	}
 
 	/**

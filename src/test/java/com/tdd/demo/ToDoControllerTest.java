@@ -135,6 +135,22 @@ public class ToDoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$", hasSize(2))).andDo(print());
 	}
+	
+	@Test
+	void testOutstandingToDos() throws Exception {
+		ToDo todo1 = new ToDo("kravuru", "Finish homework", false, new Date(), new Date());
+		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk", false, new Date(), new Date());
+		List<ToDo> completedTasks = new ArrayList<>();
+		
+		completedTasks.add(todo1);
+		completedTasks.add(todo2);
+		
+		when(toDoSvc.getAllOutstandingTasks(anyString())).thenReturn(completedTasks);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "false")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+	}
 }
 
 

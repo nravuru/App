@@ -111,7 +111,7 @@ public class ToDoServiceTest {
 	}
 	
 	@Test 
-	void getAllCompletedToDos() {
+	void completedToDosTest() {
 		ToDo todo1 = new ToDo("kravuru", "Finish homework!", false, new Date(), new Date());
 		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk!", false, new Date(), new Date());
 		
@@ -127,5 +127,40 @@ public class ToDoServiceTest {
 		List<ToDo> completedList = toDoSvc.getAllCompletedTasks("kravuru");
 		
 		assertEquals(completedList.size(), 1);
+	}
+	
+	@Test 
+	void outstandingToDosTest() {
+		ToDo todo1 = new ToDo("kravuru", "Finish homework!", false, new Date(), new Date());
+		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk!", false, new Date(), new Date());
+		
+		ToDoService toDoSvc = new ToDoService(toDoRepo);
+		toDoSvc.addToDo(todo1);
+		toDoSvc.addToDo(todo2);
+		
+		ToDo todoResp = toDoSvc.getAllToDosByUserName("kravuru").get(0);
+		todoResp.setCompleted(true);
+		
+		toDoSvc.updateToDo(todoResp);
+		
+		List<ToDo> completedList = toDoSvc.getAllOutstandingTasks("kravuru");
+		
+		assertEquals(completedList.size(), 1);
+	}
+	
+	@Test 
+	void additionalDetailsTest() {
+		ToDo todo1 = new ToDo("kravuru", "Finish homework!", "Finish Galvanize homework", false, new Date(), new Date());
+		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk!", "My dog really needs to go for a walk", false, new Date(), new Date());
+		
+		ToDoService toDoSvc = new ToDoService(toDoRepo);
+		ToDo todoResp1 = toDoSvc.addToDo(todo1);
+		ToDo todoResp2 = toDoSvc.addToDo(todo2);
+		
+		todoResp1 = toDoSvc.getToDoById(todoResp1.getId());
+		todoResp2 = toDoSvc.getToDoById(todoResp2.getId());
+						
+		assertEquals(todoResp1.getAdditionalDetails(), "Finish Galvanize homework");
+		assertEquals(todoResp2.getAdditionalDetails(), "My dog really needs to go for a walk");
 	}
 }
