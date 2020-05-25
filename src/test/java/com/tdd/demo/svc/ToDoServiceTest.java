@@ -109,4 +109,23 @@ public class ToDoServiceTest {
 				
 		assertNull(toDoSvc.getToDoById(todo.getId()));			
 	}
+	
+	@Test 
+	void getAllCompletedToDos() {
+		ToDo todo1 = new ToDo("kravuru", "Finish homework!", false, new Date(), new Date());
+		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk!", false, new Date(), new Date());
+		
+		ToDoService toDoSvc = new ToDoService(toDoRepo);
+		toDoSvc.addToDo(todo1);
+		toDoSvc.addToDo(todo2);
+		
+		ToDo todoResp = toDoSvc.getAllToDosByUserName("kravuru").get(0);
+		todoResp.setCompleted(true);
+		
+		toDoSvc.updateToDo(todoResp);
+		
+		List<ToDo> completedList = toDoSvc.getAllCompletedTasks("kravuru");
+		
+		assertEquals(completedList.size(), 1);
+	}
 }

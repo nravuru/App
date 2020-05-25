@@ -49,4 +49,8 @@ public class ToDoService {
 	public Long deleteToDoById(Long id) {
 		return toDoRepo.deleteToDoById(id);
 	}
+
+	public List<ToDo> getAllCompletedTasks(String userName) {
+		return toDoRepo.getCompletedTasks(userName);
+	}
 }

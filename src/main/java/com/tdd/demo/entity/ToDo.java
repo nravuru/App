@@ -130,4 +130,13 @@ public class ToDo {
 		this.dueDate = dueDate;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ToDo [id=" + id + ", userName=" + userName + ", description=" + description + ", completed=" + completed
+				+ ", createDate=" + createDate + ", dueDate=" + dueDate + "]";
+	}
+
 }
