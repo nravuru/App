@@ -1,60 +1,33 @@
 /**
  * 
  */
-package com.tdd.demo.entity;
+package com.tdd.demo.dto;
+
+/**
+ * @author naresh.ravurumckesson.com
+ *
+ */
 
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 
 /**
  * @author naresh.ravurumckesson.com
  *
  */
-@Entity
-@Table(name="todos")
-public class ToDo {
+
+public class ToDoDTO {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private String userName;
 	private String description;
 	private String additionalDetails;
 	private Boolean completed;
-	@Temporal(TemporalType.DATE)
 	private Date createDate;
-	@Temporal(TemporalType.DATE)
 	private Date dueDate;
 
-	public ToDo() {
+	public ToDoDTO() {
 		
-	}
-	
-	public ToDo(Long id, String userName, String description, String additionalDetails, Boolean completed, Date createDate, Date dueDate) {
-		this.id = id;
-		this.userName = userName;
-		this.description = description;
-		this.additionalDetails = additionalDetails;
-		this.completed = completed;
-		this.createDate = createDate;
-		this.dueDate = dueDate;
-	}
-	
-	public ToDo(String userName, String description, String additionalDetails, Boolean completed, Date createDate, Date dueDate) {
-		this.userName = userName;
-		this.description = description;
-		this.additionalDetails = additionalDetails;
-		this.completed = completed;
-		this.createDate = createDate;
-		this.dueDate = dueDate;
 	}
 
 	/**
@@ -160,8 +133,9 @@ public class ToDo {
 	 */
 	@Override
 	public String toString() {
-		return "ToDo [id=" + id + ", userName=" + userName + ", description=" + description + ", completed=" + completed
+		return "ToDoDTO [id=" + id + ", userName=" + userName + ", description=" + description + ", completed=" + completed
 				+ ", createDate=" + createDate + ", dueDate=" + dueDate + "]";
 	}
 
 }
+

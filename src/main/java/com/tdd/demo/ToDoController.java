@@ -5,15 +5,19 @@ package com.tdd.demo;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdd.demo.dto.ToDoDTO;
 import com.tdd.demo.entity.ToDo;
 import com.tdd.demo.svc.ToDoService;
 
@@ -28,6 +32,11 @@ public class ToDoController {
 	@Autowired
 	private ToDoService toDoService;
 	
+	@Bean
+	public ModelMapper modelMapper() {
+	    return new ModelMapper();
+	}
+	
 	@GetMapping("/todos")
 	public List<ToDo> getAllToDos() {
 		return toDoService.getAllToDos();
@@ -39,12 +48,14 @@ public class ToDoController {
 	}
 	
 	@PostMapping("/todos/add")
-	public ToDo addToDo(ToDo todo) {
+	public ToDo addToDo(@RequestBody ToDoDTO todoDto) {
+		ToDo todo = modelMapper().map(todoDto, ToDo.class);
 		return toDoService.addToDo(todo);
 	}
 	
 	@PutMapping("/todos/update")
-	public ToDo updateToDo(ToDo todo) {
+	public ToDo updateToDo(@RequestBody ToDoDTO todoDto) {
+		ToDo todo = modelMapper().map(todoDto, ToDo.class);
 		return toDoService.updateToDo(todo);
 	}
 	

@@ -49,8 +49,8 @@ public class ToDoControllerTest {
 	@Test
 	void testToDos() throws Exception {
 		List<ToDo> todoList = new ArrayList<>();
-		todoList.add(new ToDo("nravuru", "Fill Timesheet", false, new Date(), new Date()));
-		todoList.add(new ToDo("kravuru", "Complete homework", false, new Date(), new Date()));
+		todoList.add(new ToDo(100L, "nravuru", "Fill Timesheet", null, false, new Date(), new Date()));
+		todoList.add(new ToDo(101L, "kravuru", "Complete homework", null,false, new Date(), new Date()));
 		when(toDoSvc.getAllToDos()).thenReturn(todoList);
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos").contentType(MediaType.APPLICATION_JSON))
@@ -60,8 +60,8 @@ public class ToDoControllerTest {
 	@Test
 	void testToDosByUserName() throws Exception {
 		List<ToDo> todoList = new ArrayList<>();
-		todoList.add(new ToDo("kravuru", "Fill Timesheet", false, new Date(), new Date()));
-		todoList.add(new ToDo("kravuru", "Complete homework", false, new Date(), new Date()));
+		todoList.add(new ToDo(100L, "kravuru", "Fill Timesheet", null, false, new Date(), new Date()));
+		todoList.add(new ToDo(101L, "kravuru", "Complete homework", null, false, new Date(), new Date()));
 		
 		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
 		
@@ -71,19 +71,19 @@ public class ToDoControllerTest {
 	
 	@Test
 	void testAddToDo() throws Exception {
-		ToDo todo = new ToDo("kravuru", "Finish homework", false, new Date(), new Date());
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		
 		when(toDoSvc.addToDo(any())).thenReturn(todo);
 		
 		mockMvc.perform(MockMvcRequestBuilders.post("/todos/add")
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.userName").value("kravuru"));		
+				.andExpect(jsonPath("$.userName").value("kravuru")).andDo(print());
 	}
 	
 	@Test
 	void testUpdateToDo() throws Exception {
-		ToDo todo = new ToDo("kravuru", "Finish homework", false, new Date(), new Date());
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		todo.setDescription("Go for a walk!!");
 				
 		when(toDoSvc.updateToDo(any())).thenReturn(todo);
@@ -91,12 +91,12 @@ public class ToDoControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update")
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.description").value("Go for a walk!!"));
+				.andExpect(jsonPath("$.description").value("Go for a walk!!")).andDo(print());
 	}
 	
 	@Test
 	void testUpdateToDoCompleted() throws Exception {
-		ToDo todo = new ToDo("kravuru", "Finish homework", false, new Date(), new Date());
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		todo.setCompleted(true);
 				
 		when(toDoSvc.updateToDo(any())).thenReturn(todo);
@@ -109,7 +109,7 @@ public class ToDoControllerTest {
 	
 	@Test
 	void testDeleteToDo() throws Exception {
-		ToDo todo = new ToDo("kravuru", "Finish homework", false, new Date(), new Date());
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		todo.setId(100L);
 		
 		when(toDoSvc.deleteToDoById(anyLong())).thenReturn(todo.getId());
@@ -122,8 +122,8 @@ public class ToDoControllerTest {
 	
 	@Test
 	void testCompletedToDos() throws Exception {
-		ToDo todo1 = new ToDo("kravuru", "Finish homework", true, new Date(), new Date());
-		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk", true, new Date(), new Date());
+		ToDo todo1 = new ToDo(100L, "kravuru", "Finish homework", null, true, new Date(), new Date());
+		ToDo todo2 = new ToDo(101L, "kravuru", "Take dog for a walk", null, true, new Date(), new Date());
 		List<ToDo> completedTasks = new ArrayList<>();
 		
 		completedTasks.add(todo1);
@@ -133,13 +133,13 @@ public class ToDoControllerTest {
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "true")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+				.andExpect(jsonPath("$", hasSize(2)));
 	}
 	
 	@Test
 	void testOutstandingToDos() throws Exception {
-		ToDo todo1 = new ToDo("kravuru", "Finish homework", false, new Date(), new Date());
-		ToDo todo2 = new ToDo("kravuru", "Take dog for a walk", false, new Date(), new Date());
+		ToDo todo1 = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
+		ToDo todo2 = new ToDo(101L, "kravuru", "Take dog for a walk", null, false, new Date(), new Date());
 		List<ToDo> completedTasks = new ArrayList<>();
 		
 		completedTasks.add(todo1);
@@ -149,7 +149,20 @@ public class ToDoControllerTest {
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "false")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2))).andDo(print());
+				.andExpect(jsonPath("$", hasSize(2)));
+	}
+	
+	@Test
+	void testAdditionalDetails() throws Exception {
+		List<ToDo> todoList = new ArrayList<>();
+		todoList.add(new ToDo("kravuru", "Fill Timesheet", "Submit my timesheet without fail", false, new Date(), new Date()));
+		
+		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(todoList))
+			.accept(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.[0].additionalDetails").value("Submit my timesheet without fail")).andDo(print());
 	}
 }
 
