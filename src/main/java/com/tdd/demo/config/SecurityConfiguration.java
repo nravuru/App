@@ -18,7 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
  
-    private static String REALM="MY_TEST_REALM";
+    private static final String REALM = "MY_TEST_REALM";
      
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
@@ -31,9 +31,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
       http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/todos").hasRole("VISITOR")
-        .antMatchers("/todos/{username}").hasRole("VISITOR")
-        .antMatchers("/todos/**").hasRole("USER")
+        .antMatchers("/todos/add").hasRole("USER")   
+        .antMatchers("/todos/update").hasRole("USER")   
+        .antMatchers("/todos/delete/*").hasRole("USER")   
+        .antMatchers("/todos/all").hasRole("VISITOR")   
+        .antMatchers("/todos/{userName}/{completeBln}").hasRole("USER")   
+        .antMatchers("/todos/{userName}").hasRole("VISITOR")   
+        //.antMatchers("/todos/{\\w+}").hasRole("VISITOR")   
+        
         .and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//We don't need sessions to be created.
     }

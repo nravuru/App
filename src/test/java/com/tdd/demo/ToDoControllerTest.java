@@ -51,7 +51,7 @@ public class ToDoControllerTest {
 	
 	@Test
 	void testToDosAccessProtected() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/todos")).andExpect(status().isUnauthorized());
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/all")).andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -61,8 +61,8 @@ public class ToDoControllerTest {
 		todoList.add(new ToDo(101L, "kravuru", "Complete homework", null,false, new Date(), new Date()));
 		when(toDoSvc.getAllToDos()).thenReturn(todoList);
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/todos").with(httpBasic("visitor", "visitor123")))
-			.andExpect(jsonPath("$", hasSize(2))).andDo(print());			
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/all").with(httpBasic("visitor", "visitor123")))
+			.andExpect(jsonPath("$", hasSize(2)));			
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ public class ToDoControllerTest {
 		todoList.add(new ToDo(101L, "kravuru", "Complete homework", null,false, new Date(), new Date()));
 		when(toDoSvc.getAllToDos()).thenReturn(todoList);
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/todos").with(httpBasic("user", "user123")))
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/all").with(httpBasic("user", "user123")))
 			.andExpect(status().isForbidden());		
 	}
 	
@@ -100,60 +100,113 @@ public class ToDoControllerTest {
 			.andExpect(status().is(HttpStatus.UNAUTHORIZED.value()));
 	}
 	
+	@Test
+	void testToDosByUserNameBadCred() throws Exception {
+		List<ToDo> todoList = new ArrayList<>();
+		todoList.add(new ToDo(100L, "kravuru", "Fill Timesheet", null, false, new Date(), new Date()));
+		todoList.add(new ToDo(101L, "kravuru", "Complete homework", null, false, new Date(), new Date()));
+		
+		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").with(httpBasic("visitor", "user123")))
+			.andExpect(status().is(HttpStatus.UNAUTHORIZED.value()));
+	}
 	
-	
-	//@Test
+	@Test
 	void testAddToDo() throws Exception {
 		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		
 		when(toDoSvc.addToDo(any())).thenReturn(todo);
 		
-		mockMvc.perform(MockMvcRequestBuilders.post("/todos/add")
+		mockMvc.perform(MockMvcRequestBuilders.post("/todos/add").with(httpBasic("user", "user123"))
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.userName").value("kravuru"));
+				.andExpect(jsonPath("$.userName").value("kravuru")).andDo(print());
 	}
 	
-	//@Test
+	@Test
+	void testAddToDoForbidden() throws Exception {
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
+		
+		when(toDoSvc.addToDo(any())).thenReturn(todo);
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/todos/add").with(httpBasic("visitor", "visitor123")))
+				.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+	
+	@Test
 	void testUpdateToDo() throws Exception {
 		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		todo.setDescription("Go for a walk!!");
 				
 		when(toDoSvc.updateToDo(any())).thenReturn(todo);
 		
-		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update")
+		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update").with(httpBasic("user", "user123"))
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.description").value("Go for a walk!!"));
 	}
 	
-	//@Test
+	@Test
+	void testUpdateToDoForbidden() throws Exception {
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
+		todo.setDescription("Go for a walk!!");
+				
+		when(toDoSvc.updateToDo(any())).thenReturn(todo);
+		
+		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update").with(httpBasic("visitor", "visitor123")))
+				.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+	
+	@Test
 	void testUpdateToDoCompleted() throws Exception {
 		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		todo.setCompleted(true);
 				
 		when(toDoSvc.updateToDo(any())).thenReturn(todo);
 		
-		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update")
+		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update").with(httpBasic("user", "user123"))
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.completed").value(true));
 	}
 	
-	//@Test
+	@Test
+	void testUpdateToDoCompletedForbidden() throws Exception {
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
+		todo.setCompleted(true);
+				
+		when(toDoSvc.updateToDo(any())).thenReturn(todo);
+		
+		mockMvc.perform(MockMvcRequestBuilders.put("/todos/update").with(httpBasic("visitor", "visitor123")))
+			.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+	
+	@Test
 	void testDeleteToDo() throws Exception {
 		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		todo.setId(100L);
 		
 		when(toDoSvc.deleteToDoById(anyLong())).thenReturn(todo.getId());
 		
-		mockMvc.perform(MockMvcRequestBuilders.delete("/todos/delete/{id}", 100L)
+		mockMvc.perform(MockMvcRequestBuilders.delete("/todos/delete/{id}", 100L).with(httpBasic("user", "user123"))
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$").value("Record deleted"));
 	}
 	
-	//@Test
+	@Test
+	void testDeleteToDoForbidden() throws Exception {
+		ToDo todo = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
+		todo.setId(100L);
+		
+		when(toDoSvc.deleteToDoById(anyLong())).thenReturn(todo.getId());
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/todos/delete/{id}", 100L).with(httpBasic("visitor", "visitor123")))
+			.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+	
+	@Test
 	void testCompletedToDos() throws Exception {
 		ToDo todo1 = new ToDo(100L, "kravuru", "Finish homework", null, true, new Date(), new Date());
 		ToDo todo2 = new ToDo(101L, "kravuru", "Take dog for a walk", null, true, new Date(), new Date());
@@ -164,12 +217,27 @@ public class ToDoControllerTest {
 		
 		when(toDoSvc.getAllCompletedTasks(anyString())).thenReturn(completedTasks);
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "true")
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "true").with(httpBasic("user", "user123"))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$", hasSize(2)));
 	}
 	
-	//@Test
+	@Test
+	void testCompletedToDosForbidden() throws Exception {
+		ToDo todo1 = new ToDo(100L, "kravuru", "Finish homework", null, true, new Date(), new Date());
+		ToDo todo2 = new ToDo(101L, "kravuru", "Take dog for a walk", null, true, new Date(), new Date());
+		List<ToDo> completedTasks = new ArrayList<>();
+		
+		completedTasks.add(todo1);
+		completedTasks.add(todo2);
+		
+		when(toDoSvc.getAllCompletedTasks(anyString())).thenReturn(completedTasks);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "true").with(httpBasic("visitor", "visitor123")))
+			.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+	
+	@Test
 	void testOutstandingToDos() throws Exception {
 		ToDo todo1 = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
 		ToDo todo2 = new ToDo(101L, "kravuru", "Take dog for a walk", null, false, new Date(), new Date());
@@ -180,22 +248,49 @@ public class ToDoControllerTest {
 		
 		when(toDoSvc.getAllOutstandingTasks(anyString())).thenReturn(completedTasks);
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "false")
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "false").with(httpBasic("user", "user123"))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$", hasSize(2)));
 	}
 	
-	//@Test
+	@Test
+	void testOutstandingToDosForbidden() throws Exception {
+		ToDo todo1 = new ToDo(100L, "kravuru", "Finish homework", null, false, new Date(), new Date());
+		ToDo todo2 = new ToDo(101L, "kravuru", "Take dog for a walk", null, false, new Date(), new Date());
+		List<ToDo> completedTasks = new ArrayList<>();
+		
+		completedTasks.add(todo1);
+		completedTasks.add(todo2);
+		
+		when(toDoSvc.getAllOutstandingTasks(anyString())).thenReturn(completedTasks);
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{userName}/{completeBln}", "kravuru", "false").with(httpBasic("visitor", "visitor123")))
+			.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
+	}
+	
+	@Test
 	void testAdditionalDetails() throws Exception {
 		List<ToDo> todoList = new ArrayList<>();
 		todoList.add(new ToDo("kravuru", "Fill Timesheet", "Submit my timesheet without fail", false, new Date(), new Date()));
 		
 		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").with(httpBasic("visitor", "visitor123"))
+			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(todoList))
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.[0].additionalDetails").value("Submit my timesheet without fail"));
+	}
+	
+	@Test
+	void testAdditionalDetailsForbidden() throws Exception {
+		List<ToDo> todoList = new ArrayList<>();
+		todoList.add(new ToDo("kravuru", "Fill Timesheet", "Submit my timesheet without fail", false, new Date(), new Date()));
+		
+		when(toDoSvc.getAllToDosByUserName(anyString())).thenReturn(todoList);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/todos/{username}", "kravuru").with(httpBasic("user", "user123")))
+			.andExpect(status().is(HttpStatus.FORBIDDEN.value()));
 	}
 }
 

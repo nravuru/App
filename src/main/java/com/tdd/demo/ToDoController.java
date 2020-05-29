@@ -26,7 +26,7 @@ import com.tdd.demo.svc.ToDoService;
  *
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/todos")
 public class ToDoController {
 
 	@Autowired
@@ -37,29 +37,29 @@ public class ToDoController {
 	    return new ModelMapper();
 	}
 	
-	@GetMapping("/todos")
+	@GetMapping("/all")
 	public List<ToDo> getAllToDos() {
 		return toDoService.getAllToDos();
 	}
 	
-	@GetMapping("/todos/{username}")
+	@GetMapping("/{username}")
 	public List<ToDo> getAllToDosByUsername(@PathVariable("username") String username) {
 		return toDoService.getAllToDosByUserName(username);
 	}
 	
-	@PostMapping("/todos/add")
+	@PostMapping("/add")
 	public ToDo addToDo(@RequestBody ToDoDTO todoDto) {
 		ToDo todo = modelMapper().map(todoDto, ToDo.class);
 		return toDoService.addToDo(todo);
 	}
 	
-	@PutMapping("/todos/update")
+	@PutMapping("/update")
 	public ToDo updateToDo(@RequestBody ToDoDTO todoDto) {
 		ToDo todo = modelMapper().map(todoDto, ToDo.class);
 		return toDoService.updateToDo(todo);
 	}
 	
-	@DeleteMapping("/todos/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public String updateToDo(@PathVariable("id") Long id) {
 		Long idResp = toDoService.deleteToDoById(id);
 		if (idResp != null) {
@@ -69,7 +69,7 @@ public class ToDoController {
 		}
 	}
 	
-	@GetMapping("/todos/{userName}/{completeBln}")
+	@GetMapping("/{userName}/{completeBln}")
 	public List<ToDo> getAllCompletedTasks(@PathVariable("userName") String userName,
 			@PathVariable("completeBln") String completeBln) {
 		List<ToDo> tasks = null;
